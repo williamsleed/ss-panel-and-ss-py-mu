@@ -263,7 +263,7 @@ install_node(){
 	echo "# Github: https://github.com/mmmwhy/ss-panel-and-ss-py-mu   #"
 	echo "# Author: 91vps                                             #"
 	echo "#############################################################"
-	reboot now
+	#reboot now
 }
 install_panel_and_node(){
 	install_ss_panel_mod_v3 $1
