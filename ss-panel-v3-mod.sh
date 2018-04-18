@@ -102,7 +102,7 @@ install_centos_ssr(){
 	fi
 	rm -rf *.rpm
 	yum -y update --exclude=kernel*	
-	yum -y install git gcc python-setuptools lsof lrzsz python-devel libffi-devel openssl-devel iptables
+	yum -y install git gcc python-setuptools lsof lrzsz python-devel libffi-devel openssl-devel
 	yum -y groupinstall "Development Tools" 
 	#第一次yum安装 supervisor pip
 	yum -y install supervisor python-pip
@@ -172,7 +172,7 @@ install_ubuntu_ssr(){
 	apt-get update -y
 	apt-get install supervisor lsof -y
 	apt-get install build-essential wget -y
-	apt-get install iptables git -y
+	apt-get install git -y
 	Libtest
 	wget --no-check-certificate $libAddr
 	tar xf libsodium-1.0.13.tar.gz && cd libsodium-1.0.13
@@ -249,13 +249,13 @@ install_node(){
 	wget -N -P  /etc/ --no-check-certificate  https://raw.githubusercontent.com/mmmwhy/ss-panel-and-ss-py-mu/master/supervisord.conf
 	supervisord
 	#iptables
-	iptables -F
-	iptables -X  
-	iptables -I INPUT -p tcp -m tcp --dport 22:65535 -j ACCEPT
-	iptables -I INPUT -p udp -m udp --dport 22:65535 -j ACCEPT
-	iptables-save >/etc/sysconfig/iptables
-	iptables-save >/etc/sysconfig/iptables
-	echo 'iptables-restore /etc/sysconfig/iptables' >> /etc/rc.local
+	#iptables -F
+	#iptables -X  
+	#iptables -I INPUT -p tcp -m tcp --dport 22:65535 -j ACCEPT
+	#iptables -I INPUT -p udp -m udp --dport 22:65535 -j ACCEPT
+	#iptables-save >/etc/sysconfig/iptables
+	#iptables-save >/etc/sysconfig/iptables
+	#echo 'iptables-restore /etc/sysconfig/iptables' >> /etc/rc.local
 	echo "/usr/bin/supervisord -c /etc/supervisord.conf" >> /etc/rc.local
 	chmod +x /etc/rc.d/rc.local
 	echo "#############################################################"
