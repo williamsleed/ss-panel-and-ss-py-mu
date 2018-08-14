@@ -141,6 +141,7 @@ install_centos_ssr(){
 	chkconfig supervisord on
 	#第一次安装
 	python_test
+	pip install setuptools -U
 	pip install -r requirements.txt -i $pyAddr	
 	#第二次检测是否安装成功
 	if [ -z "`python -c 'import requests;print(requests)'`" ]; then
@@ -184,6 +185,7 @@ install_ubuntu_ssr(){
 	cd /root
 	git clone https://github.com/YKilin/shadowsocks.git "/root/shadowsocks"
 	cd shadowsocks
+	pip install setuptools -U
 	pip install -r requirements.txt
 	chmod +x *.sh
 	# 配置程序
