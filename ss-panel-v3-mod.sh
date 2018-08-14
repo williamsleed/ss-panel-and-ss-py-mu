@@ -173,7 +173,7 @@ install_ubuntu_ssr(){
 	apt-get update -y
 	apt-get install supervisor lsof -y
 	apt-get install build-essential wget -y
-	apt-get install git libssl-dev -y
+	apt-get install git libssl-dev libffi-dev -y
 	Libtest
 	wget --no-check-certificate $libAddr
 	tar xf libsodium-1.0.13.tar.gz && cd libsodium-1.0.13
