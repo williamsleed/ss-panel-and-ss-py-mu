@@ -6,7 +6,7 @@ install_ss_panel_mod_v3(){
 	yum install -y unzip zip git
 	num=$1
 	if [ "${num}" != "1" ]; then
-  	  wget -c --no-check-certificate https://raw.githubusercontent.com/mmmwhy/ss-panel-and-ss-py-mu/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh lnmp
+		wget -c --no-check-certificate https://raw.githubusercontent.com/mmmwhy/ss-panel-and-ss-py-mu/master/lnmp1.4.zip && unzip lnmp1.4.zip && rm -rf lnmp1.4.zip && cd lnmp1.4 && chmod +x install.sh && ./install.sh lnmp
 	fi
 	cd /home/wwwroot/
 	cp -r default/phpmyadmin/ .
@@ -58,11 +58,11 @@ Libtest(){
 }
 Get_Dist_Version()
 {
-    if [ -s /usr/bin/python3 ]; then
-        Version=`/usr/bin/python3 -c 'import platform; print(platform.linux_distribution()[1][0])'`
-    elif [ -s /usr/bin/python2 ]; then
-        Version=`/usr/bin/python2 -c 'import platform; print platform.linux_distribution()[1][0]'`
-    fi
+	if [ -s /usr/bin/python3 ]; then
+		Version=`/usr/bin/python3 -c 'import platform; print(platform.linux_distribution()[1][0])'`
+	elif [ -s /usr/bin/python2 ]; then
+		Version=`/usr/bin/python2 -c 'import platform; print platform.linux_distribution()[1][0]'`
+	fi
 }
 python_test(){
 	#测速决定使用哪个源
@@ -102,46 +102,51 @@ install_centos_ssr(){
 	fi
 	rm -rf *.rpm
 	yum -y update --exclude=kernel*	
-	yum -y install git gcc python-setuptools lsof lrzsz python-devel libffi-devel openssl-devel
+	yum -y install git gcc lsof lrzsz python-devel libffi-devel openssl-devel
 	yum -y groupinstall "Development Tools" 
 	#第一次yum安装 supervisor pip
-	yum -y install supervisor python-pip
+	if [ -z "`pip`" ]; then
+		yum -y install python-pip
+	fi
+	if [ -z "`pip list | grep setuptools`" ]; then
+		pip install setuptools -U
+	fi
+	yum -y install supervisor
 	supervisord
 	#第二次pip supervisor是否安装成功
 	if [ -z "`pip`" ]; then
-    curl -O https://bootstrap.pypa.io/get-pip.py
+		curl -O https://bootstrap.pypa.io/get-pip.py
 		python get-pip.py 
 		rm -rf *.py
 	fi
 	if [ -z "`ps aux|grep supervisord|grep python`" ]; then
-    pip install supervisor
-    supervisord
+		pip install supervisor
+		supervisord
 	fi
 	#第三次检测pip supervisor是否安装成功
 	if [ -z "`pip`" ]; then
 		if [ -z "`easy_install`"]; then
-    wget http://peak.telecommunity.com/dist/ez_setup.py
-		python ez_setup.py
+			wget http://peak.telecommunity.com/dist/ez_setup.py
+			python ez_setup.py
 		fi		
 		easy_install pip
 	fi
 	if [ -z "`ps aux|grep supervisord|grep python`" ]; then
-    easy_install supervisor
-    supervisord
+		easy_install supervisor
+		supervisord
 	fi
-	pip install --upgrade pip
+	pip install pip==9.0.3
 	Libtest
 	wget --no-check-certificate $libAddr
 	tar xf libsodium-1.0.13.tar.gz && cd libsodium-1.0.13
 	./configure && make -j2 && make install
 	echo /usr/local/lib > /etc/ld.so.conf.d/usr_local_lib.conf
 	ldconfig
-	git clone https://github.com/YKilin/shadowsocks.git "/root/shadowsocks"
+	git clone https://github.com/Tsuk1ko/shadowsocks.git "/root/shadowsocks"
 	cd /root/shadowsocks
 	chkconfig supervisord on
 	#第一次安装
 	python_test
-	pip install setuptools -U
 	pip install -r requirements.txt -i $pyAddr	
 	#第二次检测是否安装成功
 	if [ -z "`python -c 'import requests;print(requests)'`" ]; then
@@ -164,8 +169,8 @@ install_centos_ssr(){
 		python setup.py install && cd ..
 		rm -rf python
 	fi	
-	systemctl stop firewalld.service
-	systemctl disable firewalld.service
+	#systemctl stop firewalld.service
+	#systemctl disable firewalld.service
 	cp apiconfig.py userapiconfig.py
 	cp config.json user-config.json
 }
@@ -183,7 +188,7 @@ install_ubuntu_ssr(){
 	apt-get install python-pip python-dev -y
 	pip install cymysql
 	cd /root
-	git clone https://github.com/YKilin/shadowsocks.git "/root/shadowsocks"
+	git clone https://github.com/Tsuk1ko/shadowsocks.git "/root/shadowsocks"
 	cd shadowsocks
 	pip install setuptools -U
 	pip install -r requirements.txt
@@ -219,7 +224,7 @@ install_node(){
 			release="ubuntu"
 		elif cat /proc/version | grep -q -E -i "centos|red hat|redhat"; then
 			release="centos"
-	  fi
+		fi
 	}
 	install_ssr_for_each(){
 		check_sys
@@ -272,22 +277,22 @@ install_panel_and_node(){
 	# 取消文件数量限制
 	sed -i '$a * hard nofile 512000\n* soft nofile 512000' /etc/security/limits.conf
 	install_centos_ssr
-	wget -N -P  /root/shadowsocks/ --no-check-certificate  https://raw.githubusercontent.com/YKilin/ss-panel-and-ss-py-mu/master/userapiconfig.py
+	wget -N -P  /root/shadowsocks/ --no-check-certificate  https://raw.githubusercontent.com/Tsuk1ko/ss-panel-and-ss-py-mu/master/userapiconfig.py
 	# 启用supervisord
 	echo_supervisord_conf > /etc/supervisord.conf
-  sed -i '$a [program:ssr]\ncommand = python /root/shadowsocks/server.py\nuser = root\nautostart = true\nautorestart = true' /etc/supervisord.conf
+	sed -i '$a [program:ssr]\ncommand = python /root/shadowsocks/server.py\nuser = root\nautostart = true\nautorestart = true' /etc/supervisord.conf
 	supervisord
 	#iptables
-	systemctl stop firewalld.service
-	systemctl disable firewalld.service
-	yum install iptables -y
-	iptables -F
-	iptables -X  
-	iptables -I INPUT -p tcp -m tcp --dport 22:65535 -j ACCEPT
-	iptables -I INPUT -p udp -m udp --dport 22:65535 -j ACCEPT
-	iptables-save >/etc/sysconfig/iptables
-	iptables-save >/etc/sysconfig/iptables
-	echo 'iptables-restore /etc/sysconfig/iptables' >> /etc/rc.local
+	#systemctl stop firewalld.service
+	#systemctl disable firewalld.service
+	#yum install iptables -y
+	#iptables -F
+	#iptables -X  
+	#iptables -I INPUT -p tcp -m tcp --dport 22:65535 -j ACCEPT
+	#iptables -I INPUT -p udp -m udp --dport 22:65535 -j ACCEPT
+	#iptables-save >/etc/sysconfig/iptables
+	#iptables-save >/etc/sysconfig/iptables
+	#echo 'iptables-restore /etc/sysconfig/iptables' >> /etc/rc.local
 	echo "/usr/bin/supervisord -c /etc/supervisord.conf" >> /etc/rc.local
 	chmod +x /etc/rc.d/rc.local
 	echo "#############################################################"
@@ -311,9 +316,9 @@ echo "#############################################################"
 echo
 num=$1
 if [ "${num}" == "1" ]; then
-    install_panel_and_node 1
+	install_panel_and_node 1
 else
-    stty erase '^H' && read -p " 请输入数字 [1-2]:" num
+	stty erase '^H' && read -p " 请输入数字 [1-2]:" num
 		case "$num" in
 		1)
 		install_panel_and_node
