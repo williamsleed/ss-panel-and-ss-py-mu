@@ -7,12 +7,12 @@
 由于个人习惯原因取消了防火墙规则设置的相关代码，如有需要请自行根据自己需求开放端口，一般的机器默认全开的就不用管了
 
 ```
-wget -N --no-check-certificate https://raw.githubusercontent.com/Tsuk1ko/ss-panel-and-ss-py-mu/master/ss-panel-v3-mod.sh && chmod +x ss-panel-v3-mod.sh && bash ss-panel-v3-mod.sh
+wget -N --no-check-certificate https://raw.githubusercontent.com/williamsleed/ss-panel-and-ss-py-mu/master/ss-panel-v3-mod.sh && chmod +x ss-panel-v3-mod.sh && bash ss-panel-v3-mod.sh
 ```
 ## ss-panel v3一键脚本
 没动过
 ```
-wget -N --no-check-certificate https://raw.githubusercontent.com/Tsuk1ko/ss-panel-and-ss-py-mu/master/ss-panel_node.sh && chmod +x ss-panel_node.sh && bash ss-panel_node.sh
+wget -N --no-check-certificate https://raw.githubusercontent.com/williamsleed/ss-panel-and-ss-py-mu/master/ss-panel_node.sh && chmod +x ss-panel_node.sh && bash ss-panel_node.sh
 ```
 
 默认账号：91vps
